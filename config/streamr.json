@@ -1,0 +1,29 @@
+{
+    "$schema": "https://schema.streamr.network/config-v3.schema.json",
+    "client": {
+        "auth": {
+            "privateKey": "0xc015ba9b9fd1e31abc49770d76b457360756892479b717b8c7a29014c6f2286d"
+        },
+        "environment": "polygon",
+        "logLevel": "debug",
+        "contracts": {
+            "streamRegistryChainRPCs": {
+                "chainId": 137,
+                "rpcs": [{
+                    "url": "https://rpc.ankr.com/polygon", 
+                    "timeout": 120000
+                }]
+            }
+        }
+    },
+    "plugins": {
+        "websocket": {
+            "payloadMetadata": true
+        }
+    },
+    "apiAuthentication": {
+        "keys": [
+            "OWZjODdlN2VjNmNiNGMzYTgzNjRmZmExNzYwNmUxN2Y"
+        ]
+    }
+}

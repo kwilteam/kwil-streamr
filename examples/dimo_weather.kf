@@ -1,0 +1,30 @@
+// database dimo_weather is an example of how data can be synced
+// from the Streamr stream streams.dimo.eth/firehose/weather.
+// https://streamr.network/hub/projects/0xc14edaef028d15867368e7185c553abb2eff7547328a8d6ab995d3c67ded3b5b/overview
+database dimo_weather;
+
+// We use decimal(10,5) for fixed-point numbers.
+// This allows us to include 5 digits on both sides of
+// the decimal.
+table records {
+    id uuid primary key,
+    ambient_temp decimal(10,5) not null,
+    latitude decimal(10,5) not null,
+    longitude decimal(10,5) not null,
+    time text not null
+}
+
+// write_temp writes temperature data.
+// It can only be called from the Streamr Kwil extension
+procedure write_temp($temp decimal(10,5), $latitude decimal(10,5), $longitude decimal(10,5), $time text) public {
+    if @caller != 'streamr' {
+        error('write_procedure can only be called from the Streamr Kwil extension');
+    }
+
+    // generating a random (but deterministic) uuid for the primary key,
+    // using a hard-coded namespace
+    $uuid := uuid_generate_v5('d6821868-2560-4fa2-9ec9-3afb2379efb2'::uuid, @txid);
+
+    INSERT INTO records (id, ambient_temp, latitude, longitude, time)
+    VALUES ($uuid, $temp, $latitude, $longitude, $time);
+}
