@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+#
+# Build a static binary for the host OS/ARCH
+#
+
+set -eu
+
+. ./scripts/.git_variables
+. ./scripts/.go_variables
+
+echo "Building $GO_LINKMODE $(basename "${TARGET}")"
+
+(set -x ; go build -o "${TARGET}" -ldflags "${GO_LDFLAGS}" -gcflags "${GO_GCFLAGS}" ".")

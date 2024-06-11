@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+set -eu
+
+. ./scripts/.git_variables
+
+: "${GO_LINKMODE=static}"
+: "${GO_STRIP=}"
+: "${GO_GCFLAGS=}"
+
+GOOS="$(go env GOOS)"
+GOARCH="$(go env GOARCH)"
+if [ "${GOARCH}" = "arm" ]; then
+    GOARM="$(go env GOARM)"
+fi
+
+BINARY=${1:-}
+
+TARGET=${TARGET:-".build"}
+TARGET="$TARGET/${BINARY}"
+export TARGET
+
+GO_LDFLAGS="${GO_LDFLAGS:-}"
+GO_LDFLAGS="$GO_LDFLAGS -s -w"
+
+export GO_LDFLAGS="$GO_LDFLAGS" # https://github.com/koalaman/shellcheck/issues/2064
+
+GO_GCFLAGS="${GO_GCFLAGS:-}"
+export GO_GCFLAGS="$GO_GCFLAGS"
