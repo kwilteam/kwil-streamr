@@ -26,4 +26,19 @@ make build
 
 ## In Your Own Kwil Network
 
-To use the Streamr extension in your own Kwil network, import the extensions found in [`extensions/`](./extensions/) into your own Kwil binary.
+To use the Streamr extension in your own Kwil network, import the extensions found in [`extensions/`](./extensions/) into your own Kwil binary and call the register function. The extensions should be registered using Go's package `init` function.
+
+```go
+package main
+
+import (
+	"github.com/kwilteam/kwil-streamr/extensions"
+)
+
+func init() {
+	err := extensions.RegisterExtensions()
+	if err != nil {
+		panic(err)
+	}
+}
+```

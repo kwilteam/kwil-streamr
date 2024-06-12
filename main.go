@@ -5,21 +5,13 @@ import (
 	"os"
 
 	"github.com/kwilteam/kwil-db/cmd/kwild/root"
-	"github.com/kwilteam/kwil-db/extensions/listeners"
-	"github.com/kwilteam/kwil-db/extensions/resolutions"
-	streamrListener "github.com/kwilteam/kwil-streamr/extensions/listener"
-	streamrResolution "github.com/kwilteam/kwil-streamr/extensions/resolution"
+	"github.com/kwilteam/kwil-streamr/extensions"
 )
 
 func init() {
-	err := resolutions.RegisterResolution(streamrResolution.StreamrResolutionName, resolutions.ModAdd, streamrResolution.ResolutionConfig)
+	err := extensions.RegisterExtensions()
 	if err != nil {
-		panic(fmt.Sprintf("failed to register Streamr resolution: %v", err))
-	}
-
-	err = listeners.RegisterListener(streamrListener.ExtensionName, streamrListener.StartStreamrListener)
-	if err != nil {
-		panic(fmt.Sprintf("failed to register Streamr listener: %v", err))
+		panic(err)
 	}
 }
 
