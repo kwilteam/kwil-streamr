@@ -24,9 +24,9 @@ To build from source, ensure you have Go 1.22+ installed, and run:
 make build
 ```
 
-## In Your Own Kwil Network
+## In Your Own Kwil Binary
 
-To use the Streamr extension in your own Kwil network, import the extensions found in [`extensions/`](./extensions/) into your own Kwil binary and call the register function. The extensions should be registered using Go's package `init` function.
+To use the Streamr extension in a custom Kwil binary, import the extensions found in [`extensions/`](./extensions/) into your own Kwil binary and call the register function. The extensions should be registered using Go's package `init` function.
 
 ```go
 package main
