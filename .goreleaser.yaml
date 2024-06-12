@@ -1,0 +1,41 @@
+project_name: kwil-streamr
+
+changelog:
+  skip: true
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+builds:
+  - id: streamr
+    binary: kwild
+    main: .
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - 6
+      - 7
+    ignore:
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    tags:
+      - osusergo
+      - netgo
+    env:
+      - CGO_ENABLED=0
+
+checksum:
+  name_template: 'checksums.txt'
+
+release:
+  draft: true
+  replace_existing_draft: true

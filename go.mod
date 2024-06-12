@@ -5,8 +5,8 @@ go 1.21.0
 require (
 	github.com/gorilla/websocket v1.5.2
 	github.com/jpillora/backoff v1.0.0
-	github.com/kwilteam/kwil-db v0.8.0-beta.1.0.20240611043728-359c242dc40b
-	github.com/kwilteam/kwil-db/core v0.2.0
+	github.com/kwilteam/kwil-db v0.8.1
+	github.com/kwilteam/kwil-db/core v0.2.1
 	github.com/stretchr/testify v1.9.0
 )
 
@@ -77,7 +77,7 @@ require (
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/kwilteam/kwil-db/parse v0.2.0 // indirect
+	github.com/kwilteam/kwil-db/parse v0.2.1 // indirect
 	github.com/kwilteam/kwil-extensions v0.0.0-20230727040522-1cfd930226b7 // indirect
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect

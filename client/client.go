@@ -20,39 +20,39 @@ import (
 // It is a thin wrapper around the gorilla/websocket.Conn type that handles connection
 // to the Streamr node.
 type Client struct {
-	conn     *websocket.Conn
-	mu       sync.Mutex // mu protects all methods.
-	config   *ClientConfig
-	endpoint string
+	conn   *websocket.Conn
+	mu     sync.Mutex // mu protects all methods.
+	config *ClientConfig
+	url    string
 }
 
 // NewClient creates a new Streamr client.
-// streamrWebsocketEndpoint is the URL of the Streamr node's websocket server.
-// streamrWebsocketEndpoint should be in the form of "ws://<host>:<port>"/"wss://<host>:<port>".
+// streamrWebsocketUrl is the URL of the Streamr node's websocket server.
+// streamrWebsocketUrl should be in the form of "ws://<host>:<port>"/"wss://<host>:<port>".
 // streamID is the ID of the stream to subscribe to.
 // Opts can be nil, in which case the client will use the default configuration.
-func NewClient(ctx context.Context, streamrWebsocketEndpoint, streamID string, opts *ClientConfig) (*Client, error) {
+func NewClient(ctx context.Context, streamrWebsocketUrl, streamID string, opts *ClientConfig) (*Client, error) {
 	conf := DefaultConfig()
 	if opts != nil {
 		conf.Apply(opts)
 	}
 
-	path := "/stream/" + url.PathEscape(streamID) + "/subscribe"
+	path := "/streams/" + url.PathEscape(streamID) + "/subscribe"
 	if opts.ApiKey != nil {
 		path += "?apiKey=" + *opts.ApiKey
 	}
-	endpoint := streamrWebsocketEndpoint + path
+	fullUrl := streamrWebsocketUrl + path
 
-	conn, req, err := websocket.DefaultDialer.DialContext(ctx, endpoint, nil)
+	conn, req, err := websocket.DefaultDialer.DialContext(ctx, fullUrl, nil)
 	if err != nil {
 		return nil, err
 	}
 	defer req.Body.Close()
 
 	return &Client{
-		conn:     conn,
-		config:   opts,
-		endpoint: endpoint,
+		conn:   conn,
+		config: opts,
+		url:    fullUrl,
 	}, nil
 }
 
@@ -88,7 +88,7 @@ func (c *Client) readMessage() (ev *StreamrEvent, err error) {
 		for i := 0; i < *c.config.MaxRetrys; i++ {
 			time.Sleep(b.Duration())
 			c.conn.Close()
-			c.conn, _, err = websocket.DefaultDialer.Dial(c.endpoint, nil)
+			c.conn, _, err = websocket.DefaultDialer.Dial(c.url, nil)
 			if err == nil {
 				c.config.Logger.Info("reconnected to Streamr node, retrying readMessage")
 				// if reconnection is successful, try to read again
@@ -167,7 +167,7 @@ func DefaultConfig() *ClientConfig {
 type StreamrEvent struct {
 	// Content is the user-determined content of the event.
 	// This is arbitrary and can be anything.
-	Content []byte `json:"content"`
+	Content any `json:"content"`
 	// Metadata is the metadata of the event, provided
 	// by the Streamr network.
 	Metadata struct {

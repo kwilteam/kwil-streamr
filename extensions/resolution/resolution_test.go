@@ -27,10 +27,10 @@ func Test_ParamMatching(t *testing.T) {
 				},
 				{
 					Param: "b",
-					Value: []string{"2", "4"},
+					Value: "2",
 				},
 			},
-			want: []any{"1", []string{"2", "4"}},
+			want: []any{"1", "2"},
 		},
 		{
 			name:   "nil, and extra",

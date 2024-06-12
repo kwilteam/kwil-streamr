@@ -124,8 +124,7 @@ type ParamValue struct {
 	// Param is the name of the procedure parameter.
 	Param string
 	// Value is the value to be passed to the procedure parameter.
-	// It should either be a string a slice of strings
-	Value any
+	Value string
 }
 
 func (s *StreamrEvent) MarshalBinary() ([]byte, error) {

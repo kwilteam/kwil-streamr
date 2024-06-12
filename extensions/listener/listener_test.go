@@ -1,7 +1,6 @@
 package listener
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/kwilteam/kwil-streamr/extensions/resolution"
@@ -60,12 +59,7 @@ func Test_ParseEvent(t *testing.T) {
 					"key2": []any{3, 2},
 				},
 			},
-			want: []*resolution.ParamValue{
-				{
-					Param: "param1",
-					Value: []string{"3", "2"},
-				},
-			},
+			wantErr: true,
 		},
 		{
 			name: "non-existent field",
@@ -95,10 +89,7 @@ func Test_ParseEvent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			bts, err := json.Marshal(tt.obj)
-			require.Nil(t, err)
-
-			got, err := parseEvent(tt.params, bts)
+			got, err := parseEvent(tt.params, tt.obj)
 			if tt.wantErr {
 				require.NotNil(t, err)
 				return

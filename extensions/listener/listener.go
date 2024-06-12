@@ -5,7 +5,6 @@ package listener
 import (
 	"context"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"slices"
@@ -24,7 +23,7 @@ const ExtensionName = "streamr_listener"
 
 // StartStreamrListener starts the local nodes listener for Streamr events.
 func StartStreamrListener(ctx context.Context, service *common.Service, eventstore listeners.EventStore) error {
-	listenerConf, ok := service.ExtensionConfigs[ExtensionName]
+	listenerConf, ok := service.ExtensionConfigs["streamr"]
 	if !ok {
 		service.Logger.Warn("no config found for Streamr listener, skipping...")
 		return nil // no config, so do nothing
@@ -45,7 +44,7 @@ func StartStreamrListener(ctx context.Context, service *common.Service, eventsto
 		clientOpts.MaxRetrys = &config.MaxReconnects
 	}
 
-	client, err := client.NewClient(ctx, config.StreamrNodeEndpoint, config.Stream, clientOpts)
+	client, err := client.NewClient(ctx, config.StreamrNodeUrl, config.Stream, clientOpts)
 	if err != nil {
 		return fmt.Errorf("failed to create Streamr client: %v", err)
 	}
@@ -64,7 +63,13 @@ func StartStreamrListener(ctx context.Context, service *common.Service, eventsto
 				return nil // return nil as to not shutdown the node
 			}
 
-			values, err := parseEvent(config.InputMappings, msg.Content)
+			obj, ok := msg.Content.(map[string]any)
+			if !ok {
+				service.Logger.Error("invalid message content: %v", msg.Content)
+				continue // don't fail on invalid event, just skip it
+			}
+
+			values, err := parseEvent(config.InputMappings, obj)
 			if err != nil {
 				service.Logger.Error("failed to parse event: %v", err)
 				continue // don't fail on invalid event, just skip it
@@ -94,12 +99,7 @@ func StartStreamrListener(ctx context.Context, service *common.Service, eventsto
 }
 
 // parseEvent parses an event from a streamr message.
-func parseEvent(inputMappings map[string]string, message []byte) ([]*resolution.ParamValue, error) {
-	obj := make(map[string]any)
-	err := json.Unmarshal(message, &obj)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal message: %v", err)
-	}
+func parseEvent(inputMappings map[string]string, obj map[string]any) ([]*resolution.ParamValue, error) {
 
 	values := make([]*resolution.ParamValue, 0, len(inputMappings))
 	for param, field := range inputMappings {
@@ -127,7 +127,7 @@ func parseEvent(inputMappings map[string]string, message []byte) ([]*resolution.
 // or if the object does not have the expected structure.
 // All return values are strings or slices of strings.
 // It does not support arrays of objects.
-func searchField(obj map[string]any, field string) (any, error) {
+func searchField(obj map[string]any, field string) (string, error) {
 	// we need to get the first expected key
 	keys := strings.SplitN(field, ".", 2)
 	if len(keys) == 0 {
@@ -141,12 +141,8 @@ func searchField(obj map[string]any, field string) (any, error) {
 				return "", fmt.Errorf("field %s in received JSON is an object, expected a single value", keys[0])
 			}
 			// check if it is an array
-			if arr, ok := v.([]any); ok {
-				strArr := make([]string, 0, len(arr))
-				for _, a := range arr {
-					strArr = append(strArr, fmt.Sprint(a))
-				}
-				return strArr, nil
+			if _, ok := v.([]any); ok {
+				return "", fmt.Errorf("cannot handle array field in JSON: %s", keys[0])
 			}
 
 			return fmt.Sprint(v), nil
@@ -172,9 +168,9 @@ var _ listeners.ListenFunc = StartStreamrListener
 
 // listenerConfig is the configuration for the Streamr listener.
 type listenerConfig struct {
-	// StreamrNodeEndpoint is the URL of the Streamr node to listen to.
+	// StreamrNodeUrl is the URL of the Streamr node to listen to.
 	// It should be a websocket URL.
-	StreamrNodeEndpoint string
+	StreamrNodeUrl string
 	// StreamrApiKey is the API key to use when connecting to the Streamr node.
 	// It is optional.
 	StreamrApiKey string
@@ -201,12 +197,12 @@ type listenerConfig struct {
 // setConfig sets the configuration for the listener.
 func (l *listenerConfig) setConfig(m map[string]string) error {
 	var ok bool
-	l.StreamrNodeEndpoint, ok = m["streamr_endpoint"]
+	l.StreamrNodeUrl, ok = m["node"]
 	if !ok {
-		return errors.New("missing required streamr_endpoint config")
+		return errors.New("missing required Streamr node URL config")
 	}
 
-	l.StreamrApiKey = m["streamr_api_key"]
+	l.StreamrApiKey = m["api_key"]
 
 	if v, ok := m["max_reconnects"]; ok {
 		rec, err := strconv.ParseInt(v, 10, 64)
@@ -233,7 +229,7 @@ func (l *listenerConfig) setConfig(m map[string]string) error {
 		if len(parts) != 2 {
 			return fmt.Errorf("invalid target_db config: %s", targetDB)
 		}
-		decodedAddr, err := hex.DecodeString(parts[0])
+		decodedAddr, err := decodeHex(parts[0])
 		if err != nil {
 			return fmt.Errorf("invalid deployer address in target_db config: %v", err)
 		}
@@ -264,4 +260,9 @@ func (l *listenerConfig) setConfig(m map[string]string) error {
 	}
 
 	return nil
+}
+
+func decodeHex(s string) ([]byte, error) {
+	s = strings.TrimPrefix(s, "0x")
+	return hex.DecodeString(s)
 }
