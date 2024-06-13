@@ -154,9 +154,16 @@ func searchField(obj map[string]any, field string) (any, error) {
 			if _, ok := v.([]any); ok {
 				strArr := make([]string, 0, len(v.([]any)))
 				for _, val := range v.([]any) {
+					if !isScalar(val) {
+						return "", fmt.Errorf("field %s in received JSON is an array of objects, expected an array of scalars", keys[0])
+					}
 					strArr = append(strArr, fmt.Sprint(val))
 				}
 				return strArr, nil
+			}
+
+			if !isScalar(v) {
+				return "", fmt.Errorf("field %s in received JSON is not a scalar value", keys[0])
 			}
 
 			return fmt.Sprint(v), nil
@@ -176,6 +183,16 @@ func searchField(obj map[string]any, field string) (any, error) {
 	}
 
 	return searchField(innerObj, keys[1])
+}
+
+// isScalar checks that a value is a scalar value.
+func isScalar(v any) bool {
+	switch v.(type) {
+	case string, int, int64, int32, int16, int8, uint, uint64, uint32, uint16, uint8, float32, float64, bool, nil:
+		return true
+	}
+	return false
+
 }
 
 var _ listeners.ListenFunc = StartStreamrListener

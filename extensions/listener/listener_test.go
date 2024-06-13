@@ -80,6 +80,20 @@ func Test_ParseEvent(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "array of objects",
+			params: map[string]string{
+				"param1": "key1",
+			},
+			obj: map[string]any{
+				"key1": []any{
+					map[string]any{
+						"key2": 2,
+					},
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "reference a field that is an object",
 			params: map[string]string{
 				"param1": "key1",
@@ -97,7 +111,7 @@ func Test_ParseEvent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := parseEvent(tt.params, tt.obj)
 			if tt.wantErr {
-				require.NotNil(t, err)
+				require.Error(t, err)
 				return
 			}
 			require.Nil(t, err)
