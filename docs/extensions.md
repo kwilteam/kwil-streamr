@@ -41,6 +41,6 @@ The Streamr-Kwil extension natively supports the following JSON data types:
 - `string`
 - `number`
 - `boolean`
-- `array`
+- `array` of the above types
 
-To pass data to to a `uuid` or `uin256` column in Kwil, the data must be passed as a string. To pass data to a `blob` column, the data must be passed as a base64 encoded string and the schema should use the [`decode` function](https://docs.kwil.com/docs/kuneiform/functions#encoding-functions) to decode the data.
+To pass data to to a `uuid` or `uin256` column in Kwil, the data must be passed as a string. To pass data to a `blob` column, the data must be passed as an encoded string (hex or base64) and the schema should use the [`decode` function](https://docs.kwil.com/docs/kuneiform/functions#encoding-functions) to decode the data.
