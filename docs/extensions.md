@@ -33,3 +33,14 @@ kwild --autogen -- --extension.streamr.node ws://localhost:7170 \
     --extension.streamr.target_procedure create_record \
     --extension.streamr.input_mappings param1:field1,param2:field2.field3
 ```
+
+## Supported Data Types
+
+The Streamr-Kwil extension natively supports the following JSON data types:
+
+- `string`
+- `number`
+- `boolean`
+- `array`
+
+To pass data to to a `uuid` or `uin256` column in Kwil, the data must be passed as a string. To pass data to a `blob` column, the data must be passed as a base64 encoded string and the schema should use the [`decode` function](https://docs.kwil.com/docs/kuneiform/functions#encoding-functions) to decode the data.
