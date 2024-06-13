@@ -1,0 +1,38 @@
+{
+  "genesis_time": "2024-04-23T18:21:08.683247819Z",
+  "chain_id": "kwil-chain-s8090hg6",
+  "initial_height": 1,
+  "app_hash": null,
+  "consensus_params": {
+    "block": {
+      "max_bytes": 6291456,
+      "max_gas": -1
+    },
+    "evidence": {
+      "max_age_num_blocks": 100000,
+      "max_age_duration": 172800000000000,
+      "max_bytes": 1048576
+    },
+    "version": {
+      "app": 0
+    },
+    "validator": {
+      "pub_key_types": [
+        "ed25519"
+      ],
+      "join_expiry": 14400
+    },
+    "votes": {
+      "vote_expiry": 14400
+    },
+    "without_nonces": false,
+    "without_gas_costs": true
+  },
+  "validators": [
+    {
+      "pub_key": "21765c3af47de227af06627bd9219d7f71c87829ffb627b5686b6794eef2a43f",
+      "power": 1,
+      "name": "validator-0"
+    }
+  ]
+}
