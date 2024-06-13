@@ -6,14 +6,15 @@
 # Node's Private key
 private_key_path = "private_key"
 
-# TCP address for the KWILD App's GRPC server to listen on
-grpc_listen_addr = "0.0.0.0:50051"
-
 # Unix socket or TCP address for the KWILD App's Admin GRPC server to listen on
-admin_listen_addr = "unix:///tmp/kwil_admin.sock"
+admin_listen_addr = "/tmp/kwild.socket"
 
-# TCP or UNIX socket address for the KWILD App's HTTP server to listen on
-http_listen_addr = "0.0.0.0:8484" # for external access
+# TCP address for the KWILD App's JSON-RPC server to listen on
+jsonrpc_listen_addr = "0.0.0.0:8484"
+
+# TCP address for the KWILD App's HTTP server to listen on
+http_listen_addr = "0.0.0.0:8080"
+
 pg_db_host = "kwil-postgres-2"
 
 # Kwild Server hostname
