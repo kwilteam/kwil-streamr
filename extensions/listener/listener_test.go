@@ -59,7 +59,13 @@ func Test_ParseEvent(t *testing.T) {
 					"key2": []any{3, 2},
 				},
 			},
-			wantErr: true,
+			want: []*resolution.ParamValue{
+				{
+					Param:      "param1",
+					ValueArray: []string{"3", "2"},
+					IsArray:    true,
+				},
+			},
 		},
 		{
 			name: "non-existent field",

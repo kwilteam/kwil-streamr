@@ -100,7 +100,6 @@ func StartStreamrListener(ctx context.Context, service *common.Service, eventsto
 
 // parseEvent parses an event from a streamr message.
 func parseEvent(inputMappings map[string]string, obj map[string]any) ([]*resolution.ParamValue, error) {
-
 	values := make([]*resolution.ParamValue, 0, len(inputMappings))
 	for param, field := range inputMappings {
 		value, err := searchField(obj, field)
@@ -108,10 +107,21 @@ func parseEvent(inputMappings map[string]string, obj map[string]any) ([]*resolut
 			return nil, fmt.Errorf("failed to search field %s: %v", field, err)
 		}
 
-		values = append(values, &resolution.ParamValue{
+		pVal := &resolution.ParamValue{
 			Param: param,
-			Value: value,
-		})
+		}
+		switch v := value.(type) {
+		case string:
+			pVal.Value = v
+		case []string:
+			pVal.ValueArray = v
+			pVal.IsArray = true
+		default:
+			// this should never happen, but in case we change something in the future...
+			return nil, fmt.Errorf("INTERNAL STREAMR EXTENSION BUG: invalid value type for field %s: %T", field, value)
+		}
+
+		values = append(values, pVal)
 	}
 
 	// finally, to ensure we get the same event body, we order the values by param name
@@ -127,7 +137,7 @@ func parseEvent(inputMappings map[string]string, obj map[string]any) ([]*resolut
 // or if the object does not have the expected structure.
 // All return values are strings or slices of strings.
 // It does not support arrays of objects.
-func searchField(obj map[string]any, field string) (string, error) {
+func searchField(obj map[string]any, field string) (any, error) {
 	// we need to get the first expected key
 	keys := strings.SplitN(field, ".", 2)
 	if len(keys) == 0 {
@@ -142,7 +152,11 @@ func searchField(obj map[string]any, field string) (string, error) {
 			}
 			// check if it is an array
 			if _, ok := v.([]any); ok {
-				return "", fmt.Errorf("cannot handle array field in JSON: %s", keys[0])
+				strArr := make([]string, 0, len(v.([]any)))
+				for _, val := range v.([]any) {
+					strArr = append(strArr, fmt.Sprint(val))
+				}
+				return strArr, nil
 			}
 
 			return fmt.Sprint(v), nil

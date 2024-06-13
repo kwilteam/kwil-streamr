@@ -62,7 +62,11 @@ var ResolutionConfig = resolutions.ResolutionConfig{
 func matchParams(schema *types.Schema, vals []*ParamValue, target string) ([]any, error) {
 	valMap := make(map[string]any)
 	for _, v := range vals {
-		valMap[v.Param] = v.Value
+		if v.IsArray {
+			valMap[v.Param] = v.ValueArray
+		} else {
+			valMap[v.Param] = v.Value
+		}
 	}
 	args := make([]any, 0)
 
@@ -125,6 +129,12 @@ type ParamValue struct {
 	Param string
 	// Value is the value to be passed to the procedure parameter.
 	Value string
+	// ValueArray is the value to be passed to the procedure parameter.
+	// It is used for array values. Either Value or ValueArray is set.
+	ValueArray []string
+	// IsArray is a flag to indicate if the value is an array.
+	// It is used to support empty strings arrays.
+	IsArray bool
 }
 
 func (s *StreamrEvent) MarshalBinary() ([]byte, error) {

@@ -47,6 +47,23 @@ func Test_ParamMatching(t *testing.T) {
 			},
 			want: []any{"3", nil},
 		},
+		{
+			name:   "array",
+			params: []string{"$a", "$b"},
+			vals: []*ParamValue{
+				{
+					Param:      "a",
+					ValueArray: []string{"1", "2"},
+					IsArray:    true,
+				},
+				{
+					Param:      "b",
+					ValueArray: []string{"3", "4"},
+					IsArray:    true,
+				},
+			},
+			want: []any{[]string{"1", "2"}, []string{"3", "4"}},
+		},
 	}
 
 	target := "test"
