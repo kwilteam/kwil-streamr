@@ -139,6 +139,8 @@ services:
     image: streamr/node
     networks:
       - kwil-network
+    ports:
+      - "7170:7170"
     volumes:
       - ./config:/home/streamr/.streamr/config
     command: ["/usr/local/bin/npm", "exec", "-c", "streamr-broker /home/streamr/.streamr/config/streamr.json"]
