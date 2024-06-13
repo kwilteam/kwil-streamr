@@ -26,10 +26,18 @@ hostname = "kwil-node-2"
 [app.extensions.streamr]
 node = "ws://streamr-node-2:7170"
 api_key = "OWZjODdlN2VjNmNiNGMzYTgzNjRmZmExNzYwNmUxN2Y"
+
+## Weather config
 stream = "streams.dimo.eth/firehose/weather"
 target_db = "0x1A58f48A0369656015D6BE305a3716F84F979A86:dimo_weather"
 target_procedure = "write_temp"
 input_mappings = "temp:data.ambientTemp,latitude:data.latitude,longitude:data.longitude,time:time"
+
+## Demo config
+#stream = "0xd37dc4d7e2c1bdf3edd89db0e505394ea69af43d/kwil-demo"
+#target_db = "0x1A58f48A0369656015D6BE305a3716F84F979A86:demo"
+#target_procedure = "ingest_data"
+#input_mappings = "data:data"
 
 [chain.rpc]
 # TCP or UNIX socket address for the RPC server to listen on
