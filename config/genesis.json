@@ -1,6 +1,6 @@
 {
-  "genesis_time": "2024-06-13T05:07:31.961871Z",
-  "chain_id": "kwil-chain-lgASbMzf",
+  "genesis_time": "2024-06-13T11:49:03.927804459Z",
+  "chain_id": "kwil-chain-ZZCcovLF",
   "initial_height": 1,
   "app_hash": null,
   "activations": null,
@@ -25,7 +25,7 @@
       "join_expiry": 14400
     },
     "votes": {
-      "vote_expiry": 14400
+      "vote_expiry": 0
     },
     "abci": {
       "vote_extensions_enable_height": 0
@@ -34,9 +34,19 @@
   },
   "validators": [
     {
-      "pub_key": "cd82ed50777614ea8fcf157e9f0b11b54e345288c8b43418dcb04297eae437d1",
+      "pub_key": "137fb5d164125c7b3e1487c1b82708535cd3af429e8a6066837da52d8d2bda32",
       "power": 1,
       "name": "validator-0"
+    },
+    {
+      "pub_key": "8976af9b05dbcd5ce7aa15ecd9eedee23954909f48b3b62830b57fee25f4bcef",
+      "power": 1,
+      "name": "validator-1"
+    },
+    {
+      "pub_key": "4a2345c42696bb7dedced420a6ad07bfa42235696836f6808c83d4d646fa5eda",
+      "power": 1,
+      "name": "validator-2"
     }
   ]
 }
