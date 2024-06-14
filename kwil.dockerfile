@@ -29,5 +29,3 @@ else \
     echo "Running in normal mode"; \
     .build/kwil-streamr; \
 fi
-
-#CMD [".build/kwil-streamr", "--root-dir", "/root/.kwild"]
