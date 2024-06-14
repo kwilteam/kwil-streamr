@@ -23,6 +23,7 @@ const ExtensionName = "streamr_listener"
 
 // StartStreamrListener starts the local nodes listener for Streamr events.
 func StartStreamrListener(ctx context.Context, service *common.Service, eventstore listeners.EventStore) error {
+	service.Logger.Info("starting Streamr listener")
 	listenerConf, ok := service.ExtensionConfigs["streamr"]
 	if !ok {
 		service.Logger.Warn("no config found for Streamr listener, skipping...")
@@ -43,6 +44,8 @@ func StartStreamrListener(ctx context.Context, service *common.Service, eventsto
 	if config.MaxReconnects != 0 {
 		clientOpts.MaxRetrys = &config.MaxReconnects
 	}
+
+	service.Logger.Info(fmt.Sprintf("starting Streamr listener for stream %s", config.Stream))
 
 	client, err := client.NewClient(ctx, config.StreamrNodeUrl, config.Stream, clientOpts)
 	if err != nil {

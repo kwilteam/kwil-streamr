@@ -1,0 +1,178 @@
+services:
+  kwil-postgres-1:
+    image: "kwildb/postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # persis data
+    volumes:
+      - type: volume
+        source: data-kwil-postgres-1
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    networks:
+      - kwil-network
+
+  kwil-postgres-2:
+    image: "kwildb/postgres:latest"
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # persis data
+    volumes:
+      - type: volume
+        source: data-kwil-postgres-2
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    networks:
+      - kwil-network
+
+  kwil-postgres-3:
+    image: "kwildb/postgres:latest"
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # persis data
+    volumes:
+      - type: volume
+        source: data-kwil-postgres-3
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    networks:
+      - kwil-network
+
+  kwil-node-1:
+    container_name: kwil-node-1
+    hostname: kwil-node-1
+    build:
+      context: .
+      dockerfile: ./kwil.dockerfile
+# Comment out the following lines to enable debugging with delve
+#      args:
+#        - DEBUG_PORT=2345
+    ports:
+      - "8484:8484"
+      - "2345:2345"
+    depends_on:
+      kwil-postgres-1:
+        condition: service_healthy
+    volumes:
+      - ./config/testnet/config-node-1.toml:/root/.kwild/config.toml
+      - ./config/testnet/private_key_node_1:/root/.kwild/private_key
+      - ./config/testnet/genesis.json:/root/.kwild/genesis.json
+      - type: volume
+        source: data-kwil-1
+        target: /root/.kwild
+        volume:
+          nocopy: true
+    networks:
+      - kwil-network
+
+  kwil-node-2:
+    container_name: kwil-node-2
+    hostname: kwil-node-2
+    build:
+      context: .
+      dockerfile: ./kwil.dockerfile
+    # Don't enable ports to enforce the use of node 1 as interface
+    depends_on:
+      kwil-postgres-2:
+        condition: service_healthy
+    volumes:
+      - ./config/testnet/config-node-2.toml:/root/.kwild/config.toml
+      - ./config/testnet/private_key_node_2:/root/.kwild/private_key
+      - ./config/testnet/genesis.json:/root/.kwild/genesis.json
+      - type: volume
+        source: data-kwil-2
+        target: /root/.kwild
+        volume:
+          nocopy: true
+    networks:
+      - kwil-network
+
+  kwil-node-3:
+    container_name: kwil-node-3
+    hostname: kwil-node-3
+    build:
+      context: .
+      dockerfile: ./kwil.dockerfile
+    # Don't enable ports to enforce the use of node 1 as interface
+    depends_on:
+      kwil-postgres-3:
+        condition: service_healthy
+    volumes:
+      - ./config/testnet/config-node-3.toml:/root/.kwild/config.toml
+      - ./config/testnet/private_key_node_3:/root/.kwild/private_key
+      - ./config/testnet/genesis.json:/root/.kwild/genesis.json
+      - type: volume
+        source: data-kwil-3
+        target: /root/.kwild
+        volume:
+          nocopy: true
+    networks:
+      - kwil-network
+
+  streamr-node-1:
+    container_name: streamr-node-1
+    hostname: streamr-node-1
+    image: streamr/node
+    networks:
+      - kwil-network
+    ports:
+      - "7170:7170"
+    volumes:
+      - ./config:/home/streamr/.streamr/config
+    command: ["/usr/local/bin/npm", "exec", "-c", "streamr-broker /home/streamr/.streamr/config/streamr.json"]
+
+  streamr-node-2:
+    container_name: streamr-node-2
+    hostname: streamr-node-2
+    image: streamr/node
+    networks:
+      - kwil-network
+    volumes:
+      - ./config:/home/streamr/.streamr/config
+    command: ["/usr/local/bin/npm", "exec", "-c", "streamr-broker /home/streamr/.streamr/config/streamr.json"]
+
+  streamr-node-3:
+    container_name: streamr-node-3
+    hostname: streamr-node-3
+    image: streamr/node
+    networks:
+      - kwil-network
+    volumes:
+      - ./config:/home/streamr/.streamr/config
+    command: ["/usr/local/bin/npm", "exec", "-c", "streamr-broker /home/streamr/.streamr/config/streamr.json"]
+
+networks:
+  kwil-network:
+    driver: bridge
+
+volumes:
+  data-kwil-1:
+  data-kwil-2:
+  data-kwil-3:
+  data-kwil-postgres-1:
+  data-kwil-postgres-2:
+  data-kwil-postgres-3:
