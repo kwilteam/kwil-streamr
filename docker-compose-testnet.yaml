@@ -68,8 +68,9 @@ services:
     build:
       context: .
       dockerfile: ./kwil.dockerfile
-      args:
-        - DEBUG_PORT=2345
+# Comment out the following lines to enable debugging with delve
+#      args:
+#        - DEBUG_PORT=2345
     ports:
       - "8484:8484"
       - "2345:2345"
