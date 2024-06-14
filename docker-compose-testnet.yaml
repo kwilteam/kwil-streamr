@@ -1,4 +1,3 @@
-name: kwil-ls-oracle-tesnet
 services:
   kwil-postgres-1:
     image: "kwildb/postgres:latest"
@@ -69,8 +68,8 @@ services:
     build:
       context: .
       dockerfile: ./kwil.dockerfile
-#      args:
-#        - DEBUG_PORT=2345
+      args:
+        - DEBUG_PORT=2345
     ports:
       - "8484:8484"
       - "2345:2345"
