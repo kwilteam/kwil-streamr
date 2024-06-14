@@ -1,6 +1,6 @@
 # Testnet
 
-You may easily run a network of nodes locally by running the following command:
+You may easily run a network of nodes locally by running the following command from the root of the repository:
 
 ```shell
 docker compose -f docker-compose-testnet.yaml up -d
