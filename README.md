@@ -15,6 +15,7 @@ Choose one of the links below to get started:
 - [Tutorial](./docs/tutorial.md)
 - [Extension Documentation](./docs/extensions.md)
 - [Required Streamr Configuration](./docs/streamr.md)
+- [Testnet Setup](./docs/testnet.md)
 
 ## Build
 
