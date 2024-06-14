@@ -3,7 +3,7 @@
 You may easily run a network of nodes locally by running the following command:
 
 ```shell
-docker compose up -f docker-compose-testnet.yml
+docker compose -f docker-compose-testnet.yaml up -d
 ```
 
 Upon running the command, a local network with 3 Kwil nodes, 3 Postgres databases, and 3 Streamr nodes will be initiated. The first node, available at `http://localhost:8484`, serves as the gateway to interact with the network using the `kwil-cli` tool.
