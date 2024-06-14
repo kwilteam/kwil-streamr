@@ -78,9 +78,9 @@ services:
       kwil-postgres-1:
         condition: service_healthy
     volumes:
-      - ./config/config-node-1.toml:/root/.kwild/config.toml
-      - ./config/private_key_node_1:/root/.kwild/private_key
-      - ./config/genesis.json:/root/.kwild/genesis.json
+      - ./config/testnet/config-node-1.toml:/root/.kwild/config.toml
+      - ./config/testnet/private_key_node_1:/root/.kwild/private_key
+      - ./config/testnet/genesis.json:/root/.kwild/genesis.json
       - type: volume
         source: data-kwil-1
         target: /root/.kwild
@@ -100,9 +100,9 @@ services:
       kwil-postgres-2:
         condition: service_healthy
     volumes:
-      - ./config/config-node-2.toml:/root/.kwild/config.toml
-      - ./config/private_key_node_2:/root/.kwild/private_key
-      - ./config/genesis.json:/root/.kwild/genesis.json
+      - ./config/testnet/config-node-2.toml:/root/.kwild/config.toml
+      - ./config/testnet/private_key_node_2:/root/.kwild/private_key
+      - ./config/testnet/genesis.json:/root/.kwild/genesis.json
       - type: volume
         source: data-kwil-2
         target: /root/.kwild
@@ -122,9 +122,9 @@ services:
       kwil-postgres-3:
         condition: service_healthy
     volumes:
-      - ./config/config-node-3.toml:/root/.kwild/config.toml
-      - ./config/private_key_node_3:/root/.kwild/private_key
-      - ./config/genesis.json:/root/.kwild/genesis.json
+      - ./config/testnet/config-node-3.toml:/root/.kwild/config.toml
+      - ./config/testnet/private_key_node_3:/root/.kwild/private_key
+      - ./config/testnet/genesis.json:/root/.kwild/genesis.json
       - type: volume
         source: data-kwil-3
         target: /root/.kwild
