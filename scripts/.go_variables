@@ -19,8 +19,8 @@ TARGET=${TARGET:-".build"}
 TARGET="$TARGET/${BINARY}"
 export TARGET
 
-GO_LDFLAGS="${GO_LDFLAGS:-}"
-GO_LDFLAGS="$GO_LDFLAGS -s -w"
+GO_LDFLAGS="${GO_LDFLAGS:- -s -w}"
+GO_LDFLAGS="$GO_LDFLAGS"
 
 export GO_LDFLAGS="$GO_LDFLAGS" # https://github.com/koalaman/shellcheck/issues/2064
 

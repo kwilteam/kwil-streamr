@@ -1,0 +1,72 @@
+#######################################################################
+###                      App Config Options                         ###
+#######################################################################
+[app]
+
+# Node's Private key
+private_key_path = "private_key"
+
+# Unix socket or TCP address for the KWILD App's Admin GRPC server to listen on
+admin_listen_addr = "/tmp/kwild.socket"
+
+# TCP address for the KWILD App's JSON-RPC server to listen on
+jsonrpc_listen_addr = "0.0.0.0:8484"
+
+# TCP address for the KWILD App's HTTP server to listen on
+http_listen_addr = "0.0.0.0:8080"
+
+pg_db_host = "kwil-postgres-3"
+
+# Kwild Server hostname
+hostname = "kwil-node-3"
+
+[app.extensions]
+# custom listener config
+
+[app.extensions.streamr]
+node = "ws://streamr-node-1:7170"
+api_key = "OWZjODdlN2VjNmNiNGMzYTgzNjRmZmExNzYwNmUxN2Y"
+
+stream = "streams.dimo.eth/firehose/weather"
+target_db = "0x1A58f48A0369656015D6BE305a3716F84F979A86:dimo_weather"
+target_procedure = "write_temp"
+input_mappings = "temp:data.ambientTemp,latitude:data.latitude,longitude:data.longitude,time:time"
+
+[chain.rpc]
+# TCP or UNIX socket address for the RPC server to listen on
+listen_addr = "tcp://0.0.0.0:26657"
+
+# Timeout for each broadcast tx commit
+broadcast_tx_timeout = "15s"
+
+[chain.p2p]
+# Address to listen for incoming connections
+listen_addr = "tcp://0.0.0.0:26656"
+
+# Address to advertise to peers for them to dial
+# If empty, will use the same port as the listening address,
+# and will introspect on the listener or use UPnP
+# to figure out the address. ip and port are required
+# example: 159.89.10.97:26656
+
+external_address = "kwil-node-3:26656"
+
+persistent_peers = "b939bed1bbc23a011376396021205f72e96387f8@kwil-node-1:26656,b492a82561a89075cb2af06c67d83566f8ff5669@kwil-node-2:26656,8b838de3efe717678f184b254ed482bbb497d73e@kwil-node-3:26656"
+
+addr_book_strict = false
+allow_duplicate_ip = true
+
+# Enable gossiping of peer information
+pex = true
+
+# Seed nodes used to obtain peer addresses. Only used if the peers in the
+# address book are unreachable.
+seeds = ""
+
+# Seed mode, in which node constantly crawls the network and looks for
+# peers. If another node asks it for addresses, it responds and disconnects.
+#
+# It is recommended to instead run a dedicated seeder like https://github.com/kwilteam/cometseed.
+#
+# Requires peer-exchange to be enabled.
+seed_mode = false
